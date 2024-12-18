@@ -139,10 +139,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
-              <div className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-gray-900 to-gray-800 rounded-full text-white">
-                <Shield className="w-4 h-4" />
-                <span className="text-sm font-medium">Government Authorized Platform</span>
-              </div>
+           
               
               <h1 className="text-6xl font-light text-gray-900 leading-tight">
                 Vehicle Registration
@@ -289,7 +286,10 @@ const LandingPage = () => {
     
     <div className="relative">
       {/* Connection lines */}
-      <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 hidden md:block"></div>
+  {/* Connection lines - Apple style */}
+<div className="absolute top-1/2 left-0 right-0 hidden md:block">
+  <div className="h-[2px] bg-gray-900"></div>
+</div>
       
       <div className="grid md:grid-cols-3 gap-8 md:gap-12">
         {processSteps.map((step, index) => (
