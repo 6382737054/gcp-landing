@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { Camera, X, MapPin } from 'lucide-react';
+import { Camera, X, MapPin, AlertCircle } from 'lucide-react';
 
 const LandingPage = () => {
   const [showScanner, setShowScanner] = useState(false);
@@ -10,9 +10,16 @@ const LandingPage = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    mobile: '',
     licenseNumber: '',
+    mobile: '',
     email: '',
+    emergencyContact: '',
+    address: '',
+    vehicleNumber: '',
+    vehicleType: '',
+    manufacturer: '',
+    model: '',
+    bloodGroup: '',
   });
 
   useEffect(() => {
@@ -29,15 +36,22 @@ const LandingPage = () => {
         qrConfig,
         (decodedText) => {
           try {
-            // Parse the QR code data
-            const parsedData = parseQRData(decodedText);
+            console.log('Raw QR Data:', decodedText);
+            const parsedData = JSON.parse(decodedText);
+            console.log('Parsed Data:', parsedData);
             
-            // Auto-fill the form with parsed data
             setFormData({
               name: parsedData.name || '',
-              mobile: parsedData.mobile || '',
               licenseNumber: parsedData.licenseNumber || '',
+              mobile: parsedData.mobile || '',
               email: parsedData.email || '',
+              emergencyContact: parsedData.emergencyContact || '',
+              address: parsedData.address || '',
+              vehicleNumber: parsedData.vehicleNumber || '',
+              vehicleType: parsedData.vehicleType || '',
+              manufacturer: parsedData.manufacturer || '',
+              model: parsedData.model || '',
+              bloodGroup: parsedData.bloodGroup || '',
             });
             
             setScannedData(decodedText);
@@ -47,14 +61,16 @@ const LandingPage = () => {
             getLocation();
           } catch (error) {
             console.error('Error parsing QR data:', error);
-            alert('Invalid QR code format');
+            alert('Invalid QR code format. Please try again.');
+            html5QrCode.stop();
+            setShowScanner(false);
           }
         },
         (error) => {
-          console.log(error);
+          console.log('QR Scan Error:', error);
         }
       ).catch((err) => {
-        console.log(err);
+        console.log('QR Scanner Init Error:', err);
       });
 
       return () => {
@@ -62,41 +78,6 @@ const LandingPage = () => {
       };
     }
   }, [showScanner]);
-
-  const parseQRData = (qrText) => {
-    // This function assumes the QR data is in a specific format
-    // Modify this based on your actual QR code format
-    try {
-      // For demo purposes, assuming the QR text contains lines of key:value pairs
-      const lines = qrText.split('\n');
-      const data = {};
-      
-      lines.forEach(line => {
-        if (line.includes(':')) {
-          const [key, value] = line.split(':').map(str => str.trim());
-          switch (key.toLowerCase()) {
-            case 'name':
-              data.name = value;
-              break;
-            case 'license number':
-              data.licenseNumber = value;
-              break;
-            case 'mobile':
-              data.mobile = value;
-              break;
-            case 'email':
-              data.email = value;
-              break;
-          }
-        }
-      });
-      
-      return data;
-    } catch (error) {
-      console.error('Error parsing QR data:', error);
-      return {};
-    }
-  };
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -108,7 +89,7 @@ const LandingPage = () => {
           });
         },
         (error) => {
-          console.error('Error getting location:', error);
+          console.error('Location Error:', error);
           alert('Please enable location services to continue');
         }
       );
@@ -131,7 +112,7 @@ const LandingPage = () => {
       console.log('Submitting data:', submitData);
       window.location.href = 'https://chennai-police.vercel.app/scans';
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Submit Error:', error);
       alert('Error submitting form. Please try again.');
     }
 
@@ -142,7 +123,7 @@ const LandingPage = () => {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-black text-white shadow">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-2xl font-bold">Greater Police Chennai</h1>
+          <h1 className="text-2xl font-bold">Vehicle Registration Verification</h1>
         </div>
       </header>
 
@@ -150,10 +131,13 @@ const LandingPage = () => {
         {!showScanner && !showForm && (
           <div className="text-center">
             <div className="bg-white p-8 rounded-xl shadow-lg max-w-md mx-auto">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Vehicle Verification</h2>
-              <p className="text-gray-600 mb-8">
-                Scan the QR code from the vehicle registration certificate
-              </p>
+              <div className="mb-6">
+                <img src="/Images/logo.png" alt="Chennai Police Logo" className="h-16 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Vehicle Registration Scanner</h2>
+                <p className="text-gray-600 mb-8">
+                  Scan the QR code from the vehicle registration certificate to verify details
+                </p>
+              </div>
               <button
                 onClick={() => setShowScanner(true)}
                 className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center space-x-2 w-full"
@@ -183,79 +167,90 @@ const LandingPage = () => {
         )}
 
         {showForm && (
-          <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg p-6">
+          <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6">
             <div className="mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Verify Details</h2>
+              <h2 className="text-xl font-bold text-gray-900">Verification Details</h2>
               {location && (
                 <div className="flex items-center text-sm text-gray-500 mt-2">
                   <MapPin size={16} className="mr-1" />
-                  <span>Location: {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}</span>
+                  <span>Location captured: {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}</span>
                 </div>
               )}
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
+            <div className="space-y-6">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-semibold mb-3">Owner Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600">Name</p>
+                    <p className="font-medium">{formData.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">License Number</p>
+                    <p className="font-medium">{formData.licenseNumber}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Mobile</p>
+                    <p className="font-medium">{formData.mobile}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Email</p>
+                    <p className="font-medium">{formData.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Blood Group</p>
+                    <p className="font-medium">{formData.bloodGroup}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Emergency Contact</p>
+                    <p className="font-medium">{formData.emergencyContact}</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <p className="text-sm text-gray-600">Address</p>
+                    <p className="font-medium">{formData.address}</p>
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Mobile Number
-                </label>
-                <input
-                  type="tel"
-                  required
-                  pattern="[0-9]{10}"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
-                  value={formData.mobile}
-                  onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                />
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-semibold mb-3">Vehicle Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600">Vehicle Number</p>
+                    <p className="font-medium">{formData.vehicleNumber}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Vehicle Type</p>
+                    <p className="font-medium">{formData.vehicleType}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Manufacturer</p>
+                    <p className="font-medium">{formData.manufacturer}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Model</p>
+                    <p className="font-medium">{formData.model}</p>
+                  </div>
+                </div>
               </div>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  License Number
-                </label>
-                <input
-                  type="text"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
-                  value={formData.licenseNumber}
-                  onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-              </div>
-
+            <div className="mt-6 flex justify-center">
               <button
-                type="submit"
+                onClick={handleSubmit}
                 disabled={loading}
-                className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-400"
+                className="px-6 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 disabled:bg-gray-400 transition-colors duration-200 flex items-center space-x-2"
               >
-                {loading ? 'Verifying...' : 'Verify Details'}
+                {loading ? (
+                  <span>Verifying...</span>
+                ) : (
+                  <>
+                    <span>Verify and Submit</span>
+                  </>
+                )}
               </button>
-            </form>
+            </div>
           </div>
         )}
       </main>
