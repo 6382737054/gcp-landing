@@ -1,7 +1,13 @@
 import LandingPage from "./pages/landing";
+import Navbar from "./components/navbar";
 
 function App() {
-  return <LandingPage />;
+  return (
+    <div>
+      <Navbar />
+      <LandingPage />
+    </div>
+  );
 }
 
 export default App;
