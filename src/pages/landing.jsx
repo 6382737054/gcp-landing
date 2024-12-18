@@ -28,27 +28,75 @@ const LandingPage = () => {
         { facingMode: "environment" },
         qrConfig,
         (decodedText) => {
-          // Success callback
-          setScannedData(decodedText);
-          html5QrCode.stop();
-          setShowScanner(false);
-          setShowForm(true);
-          getLocation();
+          try {
+            // Parse the QR code data
+            const parsedData = parseQRData(decodedText);
+            
+            // Auto-fill the form with parsed data
+            setFormData({
+              name: parsedData.name || '',
+              mobile: parsedData.mobile || '',
+              licenseNumber: parsedData.licenseNumber || '',
+              email: parsedData.email || '',
+            });
+            
+            setScannedData(decodedText);
+            html5QrCode.stop();
+            setShowScanner(false);
+            setShowForm(true);
+            getLocation();
+          } catch (error) {
+            console.error('Error parsing QR data:', error);
+            alert('Invalid QR code format');
+          }
         },
         (error) => {
-          // Error callback
           console.log(error);
         }
       ).catch((err) => {
         console.log(err);
       });
 
-      // Cleanup
       return () => {
         html5QrCode.stop().catch(err => console.error(err));
       };
     }
   }, [showScanner]);
+
+  const parseQRData = (qrText) => {
+    // This function assumes the QR data is in a specific format
+    // Modify this based on your actual QR code format
+    try {
+      // For demo purposes, assuming the QR text contains lines of key:value pairs
+      const lines = qrText.split('\n');
+      const data = {};
+      
+      lines.forEach(line => {
+        if (line.includes(':')) {
+          const [key, value] = line.split(':').map(str => str.trim());
+          switch (key.toLowerCase()) {
+            case 'name':
+              data.name = value;
+              break;
+            case 'license number':
+              data.licenseNumber = value;
+              break;
+            case 'mobile':
+              data.mobile = value;
+              break;
+            case 'email':
+              data.email = value;
+              break;
+          }
+        }
+      });
+      
+      return data;
+    } catch (error) {
+      console.error('Error parsing QR data:', error);
+      return {};
+    }
+  };
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -61,6 +109,7 @@ const LandingPage = () => {
         },
         (error) => {
           console.error('Error getting location:', error);
+          alert('Please enable location services to continue');
         }
       );
     }
@@ -71,19 +120,19 @@ const LandingPage = () => {
     setLoading(true);
 
     try {
-      // Here you would typically send the data to your backend
       const submitData = {
         ...formData,
         qrData: scannedData,
         latitude: location?.latitude,
         longitude: location?.longitude,
+        timestamp: new Date().toISOString(),
       };
 
       console.log('Submitting data:', submitData);
-      // Redirect to the scans page
       window.location.href = 'https://chennai-police.vercel.app/scans';
     } catch (error) {
       console.error('Error submitting form:', error);
+      alert('Error submitting form. Please try again.');
     }
 
     setLoading(false);
@@ -91,21 +140,19 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-black text-white shadow">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-2xl font-bold">Vehicle QR Scanner</h1>
+          <h1 className="text-2xl font-bold">Greater Police Chennai</h1>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
         {!showScanner && !showForm && (
           <div className="text-center">
             <div className="bg-white p-8 rounded-xl shadow-lg max-w-md mx-auto">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Vehicle Verification</h2>
               <p className="text-gray-600 mb-8">
-                Scan your vehicle's QR code to verify registration details
+                Scan the QR code from the vehicle registration certificate
               </p>
               <button
                 onClick={() => setShowScanner(true)}
@@ -118,7 +165,6 @@ const LandingPage = () => {
           </div>
         )}
 
-        {/* QR Scanner */}
         {showScanner && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-xl overflow-hidden w-full max-w-md relative">
@@ -136,15 +182,14 @@ const LandingPage = () => {
           </div>
         )}
 
-        {/* Form */}
         {showForm && (
           <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg p-6">
             <div className="mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Enter Your Details</h2>
+              <h2 className="text-xl font-bold text-gray-900">Verify Details</h2>
               {location && (
                 <div className="flex items-center text-sm text-gray-500 mt-2">
                   <MapPin size={16} className="mr-1" />
-                  <span>Location captured: {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}</span>
+                  <span>Location: {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}</span>
                 </div>
               )}
             </div>
@@ -208,7 +253,7 @@ const LandingPage = () => {
                 disabled={loading}
                 className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-400"
               >
-                {loading ? 'Submitting...' : 'Submit'}
+                {loading ? 'Verifying...' : 'Verify Details'}
               </button>
             </form>
           </div>
