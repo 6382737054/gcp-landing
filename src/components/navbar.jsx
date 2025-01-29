@@ -24,16 +24,20 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between h-20">
+        <div className="flex justify-between items-center h-20">
           {/* Logo Section */}
-          <div className="flex-shrink-0 flex items-center">
+          <div className="flex items-center">
             <img 
               src="Images/logo.png" 
               alt="Logo" 
-              className="h-12 w-auto"
+              className="h-12 w-auto mr-3"
             />
+            <span className="text-xl font-semibold tracking-wide text-teal-800 font-sans">
+              <span className="font-bold">COE</span>
+             
+            </span>
           </div>
-
+          
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-1">
             {Object.entries(menuItems).map(([menu, subItems]) => (
@@ -75,9 +79,26 @@ const Navbar = () => {
               </div>
             ))}
           </div>
+          
+          {/* Right Logo */}
+          <div className="hidden md:block">
+            <img 
+              src="Images/cmlogo.png"
+              alt="Right Logo"
+              className="h-20 w-32"  // Increased size for desktop
+            />
+          </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
+          {/* Mobile Section - Logo and Menu Button */}
+          <div className="md:hidden flex items-center space-x-4">
+            {/* Right Logo for Mobile */}
+            <img 
+              src="Images/cmlogo.png"
+              alt="Right Logo"
+              className="h-16 w-24"  // Increased size for mobile
+            />
+            
+            {/* Mobile Menu Button */}
             <button
               onClick={toggleMobileMenu}
               className={`inline-flex items-center justify-center p-3 rounded-md transition-colors duration-200 focus:outline-none

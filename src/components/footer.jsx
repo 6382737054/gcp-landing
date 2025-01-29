@@ -20,7 +20,7 @@ const Footer = () => {
             <img 
               src="Images/logo.png" 
               alt="Logo" 
-              className="h-12 w-auto"
+              className="h-16 w-16"
             />
             <p className="text-gray-300 text-sm leading-relaxed">
               Dedicated to supporting individuals with autism and their families through understanding, acceptance, and comprehensive resources.
