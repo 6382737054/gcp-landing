@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronRight, Heart, Brain, Users, Sparkles, ArrowRight } from 'lucide-react';
+import SupportSection from '../components/homebanner';
 
 const InfoSection = ({ imageLeft, title, subtitle, description, imageSrc, decorativeElement }) => (
   <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -253,6 +254,7 @@ const Homepage = () => {
           <Brain className="w-48 h-48" />
         </div>
       </section>
+      <SupportSection/>
     </main>
   );
 };
