@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronRight, Heart, Brain, Users, Sparkles, ArrowRight } from 'lucide-react';
 import SupportSection from '../components/homebanner';
 import VideoShowcase from '../components/homevideo';
+import ActivitiesPage from '../components/homegallery';
 
 const InfoSection = ({ imageLeft, title, subtitle, description, imageSrc, decorativeElement }) => (
   <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -257,6 +258,7 @@ const Homepage = () => {
       </section>
       <SupportSection/>
       <VideoShowcase/>
+      <ActivitiesPage/>
     </main>
   );
 };
