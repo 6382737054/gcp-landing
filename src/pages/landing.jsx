@@ -1,503 +1,260 @@
-import React, { useState, useEffect } from 'react';
-import { Html5Qrcode } from 'html5-qrcode';
-import { 
-  Camera, 
-  X, 
-  Shield, 
-  Database, 
-  Fingerprint, 
-  Scan,
-  CheckCircle,
-  Clock,
-  ArrowRight,
-  Lock,
-  CheckSquare,
-  Zap,
-  Award,
-  Users,
-  BarChart,
-  ExternalLink,
-  PhoneCall,
-  Mail,
-  MapPin,
-  ChevronRight,
-  Gift,
-  Star,
-  FileCheck,
-  Globe
-} from 'lucide-react';
+import React, { useState } from 'react';
+import { ChevronRight, Heart, Brain, Users, Sparkles, ArrowRight } from 'lucide-react';
 
-const LandingPage = () => {
-  const [showScanner, setShowScanner] = useState(false);
-  const [activeFeature, setActiveFeature] = useState(0);
+const InfoSection = ({ imageLeft, title, subtitle, description, imageSrc, decorativeElement }) => (
+  <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center py-16">
+      {imageLeft ? (
+        <>
+          <div className="relative flex justify-center lg:justify-start">
+            <div className="relative w-[499px]">
+              <div className="relative rounded-lg overflow-hidden shadow-2xl bg-[#7DCFBD] w-full h-[610px]">
+                <img 
+                  src={imageSrc} 
+                  alt={title} 
+                  className="w-full h-full object-cover"
+                  style={{ background: '#7DCFBD' }}
+                />
+                {/* Decorative dots */}
+                <div className="absolute -bottom-2 -right-2">
+                  <svg width="50" height="50" viewBox="0 0 100 100" fill="none">
+                    <circle cx="10" cy="10" r="3" fill="#FF6B53" />
+                    <circle cx="30" cy="10" r="3" fill="#FF6B53" />
+                    <circle cx="50" cy="10" r="3" fill="#FF6B53" />
+                    <circle cx="10" cy="30" r="3" fill="#FF6B53" />
+                    <circle cx="30" cy="30" r="3" fill="#FF6B53" />
+                    <circle cx="50" cy="30" r="3" fill="#FF6B53" />
+                  </svg>
+                </div>
+              </div>
+              {/* Decorative element */}
+              {decorativeElement && (
+                <div className="absolute -left-4 -bottom-4 text-[#41969F]/10 z-0 transform scale-75">
+                  {decorativeElement}
+                </div>
+              )}
+            </div>
+          </div>
 
-  const processSteps = [
-    {
-      icon: <Scan className="w-6 h-6" />,
-      title: "Quick Scan",
-      description: "Scan the QR code from your vehicle registration certificate"
+          <div className="space-y-6 lg:pl-8 max-w-xl">
+            <div className="inline-flex items-center space-x-2 px-4 py-2 bg-rose-100 rounded-full">
+              <span className="text-rose-600 font-medium text-sm tracking-wide uppercase">{subtitle}</span>
+              <ArrowRight className="w-4 h-4 text-rose-600" />
+            </div>
+            <h2 className="text-3xl font-bold text-[#8B1A50]">{title}</h2>
+            <p className="text-lg text-gray-700 leading-relaxed">{description}</p>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="space-y-6 lg:pr-8 max-w-xl">
+            <div className="inline-flex items-center space-x-2 px-4 py-2 bg-rose-100 rounded-full">
+              <span className="text-rose-600 font-medium text-sm tracking-wide uppercase">{subtitle}</span>
+              <ArrowRight className="w-4 h-4 text-rose-600" />
+            </div>
+            <h2 className="text-3xl font-bold text-[#8B1A50]">{title}</h2>
+            <p className="text-lg text-gray-700 leading-relaxed">{description}</p>
+          </div>
+
+          <div className="relative flex justify-center lg:justify-end">
+            <div className="relative w-[499px]">
+              <div className="relative rounded-lg overflow-hidden shadow-2xl bg-[#7DCFBD] w-full h-[610px]">
+                <img 
+                  src={imageSrc} 
+                  alt={title} 
+                  className="w-full h-full object-cover"
+                  style={{ background: '#7DCFBD' }}
+                />
+                {/* Decorative dots */}
+                <div className="absolute -bottom-2 -left-2">
+                  <svg width="50" height="50" viewBox="0 0 100 100" fill="none">
+                    <circle cx="10" cy="10" r="3" fill="#FF6B53" />
+                    <circle cx="30" cy="10" r="3" fill="#FF6B53" />
+                    <circle cx="50" cy="10" r="3" fill="#FF6B53" />
+                    <circle cx="10" cy="30" r="3" fill="#FF6B53" />
+                    <circle cx="30" cy="30" r="3" fill="#FF6B53" />
+                    <circle cx="50" cy="30" r="3" fill="#FF6B53" />
+                  </svg>
+                </div>
+              </div>
+              {/* Decorative element */}
+              {decorativeElement && (
+                <div className="absolute -right-4 -bottom-4 text-[#41969F]/10 z-0 transform scale-75">
+                  {decorativeElement}
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+);
+const Homepage = () => {
+  const [activeCard, setActiveCard] = useState('medical');
+
+  const cardContents = {
+    medical: {
+      title: 'Medical Diagnosis',
+      content: {
+        left: 'A medical diagnosis is made by a psychologist, developmental pediatrician, or other specialized physician based on an assessment of symptoms and diagnostic tests. A medical diagnosis of Autism spectrum disorder is most frequently made according to the Diagnostic and Statistical Manual (DSM-5, released 2013) of the American Psychiatric Association. This manual guides physicians in diagnosing Autism spectrum disorder according to a specific set of criterion.',
+        right: 'A brief observation in a single setting cannot present a true picture of someone\'s abilities and behaviors. The person\'s developmental history and input from parents, caregivers and/or teachers are important components of an accurate diagnosis.'
+      }
     },
-    {
-      icon: <Database className="w-6 h-6" />,
-      title: "Instant Verification",
-      description: "Automated verification against secure database"
+    educational: {
+      title: 'Educational Determination',
+      content: {
+        left: 'An educational determination is made by a multidisciplinary evaluation team of various school professionals. The evaluation results are reviewed by a team of qualified professionals and the parents to determine whether a student qualifies for special education and related services under the Individuals with Disabilities Education Act (IDEA) (Hawkins, 2009).',
+        right: 'The evaluation process involves multiple steps and considerations to ensure a comprehensive understanding of the student\'s needs and abilities within the educational context.'
+      }
     },
-    {
-      icon: <CheckCircle className="w-6 h-6" />,
-      title: "Verification Status",
-      description: "Get immediate results and digital documentation"
+    screening: {
+      title: 'Screening',
+      content: {
+        left: 'An educational determination can qualify an individual for support within school settings. However, an educational determination is not the same as a medical diagnosis, and often will not qualify an individual for therapies and support outside of school that would typically be covered by insurance or Medicaid.',
+        right: 'Additionally, a medical diagnosis of Autism does not guarantee an educational determination. Each process serves its own distinct purpose in supporting individuals with autism.'
+      }
     }
-  ];
-
-  const features = [
-    {
-      icon: <Lock className="w-8 h-8 text-blue-600" />,
-      title: "Secure Platform",
-      description: "End-to-end encryption"
-    },
-    {
-      icon: <Zap className="w-8 h-8 text-yellow-600" />,
-      title: "Lightning Fast",
-      description: "Real-time processing"
-    },
-    {
-      icon: <CheckSquare className="w-8 h-8 text-green-600" />,
-      title: "Reliable Results",
-      description: "99.9% accuracy rate"
-    }
-  ];
-
-  const integrations = [
-    {
-      icon: <Globe className="w-12 h-12 text-indigo-600" />,
-      title: "National Vehicle Database",
-      description: "Direct integration with central vehicle registry"
-    },
-    {
-      icon: <Shield className="w-12 h-12 text-blue-600" />,
-      title: "Police Records",
-      description: "Real-time access to police verification data"
-    },
-    {
-      icon: <FileCheck className="w-12 h-12 text-green-600" />,
-      title: "Insurance Verification",
-      description: "Instant insurance status check"
-    }
-  ];
-
-  const statistics = [
-    { value: "1M+", label: "Verifications", increment: "Monthly" },
-    { value: "99.9%", label: "Accuracy", increment: "Guaranteed" },
-    { value: "24/7", label: "Support", increment: "Available" },
-    { value: "100+", label: "Departments", increment: "Connected" }
-  ];
-
-  useEffect(() => {
-    if (showScanner) {
-      const html5QrCode = new Html5Qrcode("reader");
-      
-      const qrConfig = {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-      };
-
-      html5QrCode.start(
-        { facingMode: "environment" },
-        qrConfig,
-        (decodedText) => {
-          console.log('QR Code scanned:', decodedText);
-          html5QrCode.stop();
-          window.location.href = 'https://chennai-police.vercel.app/';
-        },
-        (error) => {
-          console.log('QR Scan Error:', error);
-        }
-      ).catch((err) => {
-        console.log('QR Scanner Init Error:', err);
-      });
-
-      return () => {
-        html5QrCode.stop().catch(err => console.error(err));
-      };
-    }
-  }, [showScanner]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveFeature((prev) => (prev + 1) % features.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 mt-10">
+    <main className="relative w-full">
       {/* Hero Section */}
-      <section className="relative min-h-[85vh] flex items-center border-b border-gray-200 overflow-hidden">
-        <div className="absolute inset-0 bg-grid-gray-900/[0.02]"></div>
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-           
-              
-              <h1 className="text-6xl font-light text-gray-900 leading-tight">
-                Vehicle Registration
-                <span className="block font-semibold mt-2 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700">
-                  Verification System
-                </span>
-              </h1>
-              
-              <p className="text-xl text-gray-600 leading-relaxed">
-                Experience seamless vehicle verification through our advanced digital platform.
-                Secure, instant, and government-approved.
-              </p>
+      <section className="relative min-h-screen pt-08">
+        <div className="absolute inset-0 top-0">
+          <div className="absolute inset-0 bg-[#FAF2F0]" style={{ clipPath: 'ellipse(100% 100% at 50% 0%)' }}>
+            <div className="absolute bottom-0 w-full h-32 bg-gradient-to-b from-transparent to-white"></div>
+          </div>
+        </div>
 
-              <div className="flex items-center space-x-6">
-                <button
-                  onClick={() => setShowScanner(true)}
-                  className="group relative px-8 py-4 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-lg overflow-hidden hover:scale-105 transition-all duration-200"
-                >
-                  <span className="flex items-center justify-center space-x-2">
-                    <Camera className="w-5 h-5" />
-                    <span>Start Verification</span>
-                  </span>
-                </button>
-                
-                <button className="group flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200">
-                  <span>Learn More</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-                </button>
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-28 lg:pt-32 pb-32">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="space-y-8 max-w-xl">
+              <div className="space-y-3">
+                <p className="text-[#E31B54] font-medium text-sm tracking-wide uppercase">
+                  Screening & Diagnosis
+                </p>
+                <h1 className="text-[#8B1A50] text-5xl lg:text-6xl font-bold leading-tight">
+                  Identifying Autism
+                </h1>
+              </div>
+              
+              <div className="space-y-6 text-gray-700 text-lg">
+                <p className="leading-relaxed">
+                  When family members or support providers become concerned that a child is not following a typical developmental course, they turn to experts, including psychologists, educators and medical professionals, for a diagnosis.
+                </p>
+                <p className="leading-relaxed">
+                  At first glance, some people with Autism may appear to have an intellectual disability, sensory processing issues, or problems with hearing or vision, and the diagnosis of Autism may become more challenging.
+                </p>
+                <p className="leading-relaxed">
+                  These conditions can co-occur with Autism and it can be confusing to families when they receive multiple diagnoses. However, it is important to identify Autism, as an accurate and early Autism diagnosis can provide the basis for appropriate educational and home-based support.
+                </p>
               </div>
             </div>
 
-            <div className="bg-white p-8 rounded-2xl shadow-xl transform hover:scale-105 transition-transform duration-300">
-              <div className="grid grid-cols-2 gap-6">
-                {features.map((feature, index) => (
-                  <div 
-                    key={index} 
-                    className={`p-6 rounded-xl transition-all duration-300 ${
-                      activeFeature === index 
-                        ? 'bg-gray-900 text-white scale-105' 
-                        : 'bg-gray-50 hover:shadow-md'
-                    }`}
-                  >
-                    {feature.icon}
-                    <h3 className="font-semibold mt-4">{feature.title}</h3>
-                    <p className={`text-sm mt-1 ${activeFeature === index ? 'text-gray-300' : 'text-gray-600'}`}>
-                      {feature.description}
-                    </p>
-                  </div>
-                ))}
+            <div className="relative mt-8 lg:mt-0">
+              <div className="relative bg-[#7DCFBD] rounded-lg overflow-hidden shadow-xl">
+                <img
+                  src="Images/landing1.png"
+                  alt="Person smiling"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-    {/* Statistics Section */}
-<section className="py-24 bg-gradient-to-r from-gray-900 to-gray-800 relative overflow-hidden">
-  {/* Decorative backgrounds */}
-  <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:20px_20px]"></div>
-  <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-  <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
-  
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-    {/* Section Header */}
-    <div className="text-center mb-16">
-      <div className="inline-flex items-center justify-center p-2 bg-white/5 rounded-xl mb-4">
-        <span className="text-sm font-medium text-gray-300">Our Impact</span>
-      </div>
-      <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
-        Trusted by <span className="font-semibold">Millions</span>
-      </h2>
-      <div className="w-20 h-1 bg-white/20 mx-auto"></div>
-    </div>
-
-    {/* Statistics Grid */}
-    <div className="grid md:grid-cols-4 gap-8">
-      {statistics.map((stat, index) => (
-        <div 
-          key={index}
-          className="group relative"
-        >
-          {/* Card Background with Gradient Border */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-white/10 rounded-2xl blur-sm"></div>
-          <div className="relative p-8 bg-gray-900/80 rounded-2xl backdrop-blur-sm hover:transform hover:scale-105 transition-all duration-300">
-            {/* Top Decorative Line */}
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-            
-            {/* Icon Container */}
-            <div className="w-12 h-12 mx-auto mb-4 bg-white/5 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-              {index === 0 && <Users className="w-6 h-6 text-blue-400" />}
-              {index === 1 && <CheckCircle className="w-6 h-6 text-green-400" />}
-              {index === 2 && <Clock className="w-6 h-6 text-purple-400" />}
-              {index === 3 && <Database className="w-6 h-6 text-yellow-400" />}
-            </div>
-            
-            {/* Statistics Content */}
-            <div className="relative">
-              <div className="text-4xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-200">
-                {stat.value}
-              </div>
-              <div className="text-gray-300 font-medium">
-                {stat.label}
-              </div>
-              <div className="text-gray-400 text-sm mt-1">
-                {stat.increment}
-              </div>
-            </div>
-            
-            {/* Bottom Decorative Line */}
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-          </div>
+      {/* Cards Section */}
+      <section className="relative bg-[#41969F] py-24">
+        <div className="absolute top-0 right-0 text-white/10">
+          <Brain className="w-48 h-48" />
         </div>
-      ))}
-    </div>
+        <div className="absolute bottom-0 left-0 text-white/10">
+          <Heart className="w-32 h-32" />
+        </div>
 
-    {/* Bottom Decorative Elements */}
-    <div className="mt-16 text-center">
-      <div className="inline-flex items-center space-x-4 text-gray-400">
-        <div className="w-16 h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent"></div>
-        <Shield className="w-5 h-5" />
-        <div className="w-16 h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent"></div>
-      </div>
-    </div>
-  </div>
-</section>
-{/* Process Section */}
-<section className="py-24 bg-white relative overflow-hidden">
-  <div className="absolute inset-0 bg-grid-gray-900/[0.02]"></div>
-  {/* Decorative elements */}
-  <div className="absolute top-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
-  <div className="absolute bottom-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
-  
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-    <div className="max-w-3xl mx-auto text-center mb-16">
-      <div className="inline-flex items-center justify-center p-2 bg-gray-900/5 rounded-xl mb-4">
-        <span className="text-sm font-medium text-gray-600">How It Works</span>
-      </div>
-      <h2 className="text-4xl font-light text-gray-900">
-        Simple <span className="font-semibold">Three-Step</span> Process
-      </h2>
-      <p className="text-gray-600 mt-4">Complete verification in minutes</p>
-      <div className="w-20 h-1 bg-gray-900 mx-auto mt-6"></div>
-    </div>
-    
-    <div className="relative">
-      {/* Connection lines */}
-  {/* Connection lines - Apple style */}
-<div className="absolute top-1/2 left-0 right-0 hidden md:block">
-  <div className="h-[2px] bg-gray-900"></div>
-</div>
-      
-      <div className="grid md:grid-cols-3 gap-8 md:gap-12">
-        {processSteps.map((step, index) => (
-          <div key={index} className="relative">
-            <div className="group bg-white p-8 rounded-2xl hover:shadow-xl transition-all duration-300 border border-gray-100">
-              {/* Step number */}
-              <div className="absolute -top-4 left-8 bg-gray-900 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg">
-                {index + 1}
-              </div>
-              
-              {/* Icon container */}
-              <div className="mb-6 transform-gpu group-hover:-translate-y-1 transition-transform duration-200">
-                <div className="w-14 h-14 bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-200 shadow-lg">
-                  {step.icon}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {Object.entries(cardContents).map(([key, value]) => (
+              <button
+                key={key}
+                onClick={() => setActiveCard(key)}
+                className={`relative group p-8 rounded-lg transition-all duration-300 bg-[#FF6B53] 
+                  ${activeCard === key ? 'shadow-2xl scale-105' : 'hover:shadow-xl hover:scale-102'}`}
+              >
+                <div className="relative z-10">
+                  <h3 className="text-white text-xl font-semibold">{value.title}</h3>
+                  <ChevronRight 
+                    className={`absolute right-4 top-1/2 -translate-y-1/2 text-white transition-transform duration-300 
+                      ${activeCard === key ? 'translate-x-2' : 'group-hover:translate-x-2'}`}
+                  />
                 </div>
-              </div>
-              
-              <h3 className="text-xl font-semibold text-gray-900">{step.title}</h3>
-              <p className="text-gray-600 mt-2 leading-relaxed">{step.description}</p>
-              
-              {/* Decorative arrow for non-last items */}
-              {index < processSteps.length - 1 && (
-                <div className="hidden md:block absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2 text-gray-300">
-                  <ArrowRight className="w-6 h-6" />
-                </div>
-              )}
-            </div>
+                
+                <div 
+                  className={`absolute bottom-0 left-0 h-1 bg-white transition-all duration-300 ease-out
+                    ${activeCard === key ? 'w-full' : 'w-0 group-hover:w-1/3'}`}
+                ></div>
+              </button>
+            ))}
           </div>
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
 
-{/* Integrations Section */}
-<section className="py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-  <div className="absolute inset-0">
-    <div className="absolute inset-0 bg-[linear-gradient(30deg,#f0f0f0_12%,transparent_12.5%,transparent_87%,#f0f0f0_87.5%,#f0f0f0)] bg-[length:16px_16px]"></div>
-  </div>
-  
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-    <div className="text-center mb-16">
-      <div className="inline-flex items-center justify-center p-2 bg-gray-900/5 rounded-xl mb-4">
-        <span className="text-sm font-medium text-gray-600">Integrations</span>
-      </div>
-      <h2 className="text-4xl font-light text-gray-900">
-        Connected <span className="font-semibold">Ecosystem</span>
-      </h2>
-      <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-        Seamlessly integrated with major government databases for comprehensive verification
-      </p>
-      <div className="w-20 h-1 bg-gray-900 mx-auto mt-6"></div>
-    </div>
-
-    <div className="grid md:grid-cols-3 gap-8">
-      {integrations.map((item, index) => (
-        <div key={index} className="group relative">
-          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-gray-50 to-transparent"></div>
-          <div className="relative bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
-            {/* Icon with gradient background */}
-            <div className="inline-block p-3 bg-gradient-to-br from-gray-50 to-white rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-200">
-              <div className="w-16 h-16 flex items-center justify-center">
-                {item.icon}
+          <div className="text-white">
+            <h2 className="text-3xl font-bold mb-8 border-b border-white/20 pb-4 max-w-3xl mx-auto">
+              {cardContents[activeCard].title}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+              <div className="text-lg leading-relaxed">
+                {cardContents[activeCard].content.left}
               </div>
-            </div>
-            
-            <h3 className="text-xl font-semibold mt-6 group-hover:text-gray-900 transition-colors duration-200">
-              {item.title}
-            </h3>
-            <p className="text-gray-600 mt-3 leading-relaxed">{item.description}</p>
-            
-            {/* Hover indicator */}
-            <div className="mt-6 flex items-center text-gray-400 group-hover:text-gray-600 transition-colors duration-200">
-              <span className="text-sm">Learn More</span>
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+              <div className="text-lg leading-relaxed md:border-l border-white/20 md:pl-12">
+                {cardContents[activeCard].content.right}
+              </div>
             </div>
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
-      
-     {/* FAQ Section */}
-     <section className="py-24 bg-white">
-       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-         <div className="text-center mb-16">
-           <h2 className="text-4xl font-light text-gray-900">
-             Frequently Asked <span className="font-semibold">Questions</span>
-           </h2>
-           <p className="text-gray-600 mt-4">Find quick answers to common queries</p>
-         </div>
+      </section>
 
-         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-           <div className="bg-gray-50 p-6 rounded-xl hover:shadow-md transition-all duration-200">
-             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-               What documents do I need?
-             </h3>
-             <p className="text-gray-600">
-               You only need your vehicle registration certificate with the QR code. The system automatically processes all other required documents.
-             </p>
-           </div>
-           <div className="bg-gray-50 p-6 rounded-xl hover:shadow-md transition-all duration-200">
-             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-               How long does verification take?
-             </h3>
-             <p className="text-gray-600">
-               The verification process is instant. Results are typically available within seconds of scanning the QR code.
-             </p>
-           </div>
-           <div className="bg-gray-50 p-6 rounded-xl hover:shadow-md transition-all duration-200">
-             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-               Is the platform secure?
-             </h3>
-             <p className="text-gray-600">
-               Yes, we use end-to-end encryption and follow all government security protocols to protect your data.
-             </p>
-           </div>
-           <div className="bg-gray-50 p-6 rounded-xl hover:shadow-md transition-all duration-200">
-             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-               What if I face issues?
-             </h3>
-             <p className="text-gray-600">
-               Our 24/7 support team is available to help. Contact us through phone, email, or the contact form above.
-             </p>
-           </div>
-         </div>
-       </div>
-     </section>
+      {/* Info Sections */}
+      <section className="relative bg-white py-12">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <InfoSection 
+            imageLeft={true}
+            title="Early Intervention & Support"
+            subtitle="Building Foundations"
+            description="Early intervention services can improve a child's development. Children who receive autism-appropriate education and support at key developmental stages are more likely to gain essential social skills and react better in society. Early intervention not only gives the best outcomes for your child, but it will also help reduce the stress on you and your family."
+            imageSrc="Images/early-intervention.jpg"
+            decorativeElement={<Heart className="w-32 h-32" />}
+          />
 
-     {/* Footer */}
-     <footer className="bg-gray-900 text-white py-16">
-       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-         <div className="grid md:grid-cols-4 gap-12">
-           <div className="space-y-4">
-             <div className="flex items-center space-x-2">
-               <Shield className="w-8 h-8" />
-               <span className="text-xl font-semibold">GCP Verify</span>
-             </div>
-             <p className="text-gray-400">
-               Official vehicle registration verification platform for the Government of Tamil Nadu.
-             </p>
-           </div>
-           
-           <div>
-             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-             <ul className="space-y-2">
-               <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-200">About Us</a></li>
-               <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-200">Services</a></li>
-               <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-200">Support</a></li>
-               <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-200">Contact</a></li>
-             </ul>
-           </div>
+          <InfoSection 
+            imageLeft={false}
+            title="Understanding Behavioral Patterns"
+            subtitle="Behavioral Analysis"
+            description="Understanding behavioral patterns is crucial for supporting individuals with autism. By recognizing and interpreting these patterns, we can better adapt environments and interactions to support their needs. This understanding helps create more effective strategies for communication and learning."
+            imageSrc="Images/behavioral-patterns.jpg"
+            decorativeElement={<Brain className="w-32 h-32" />}
+          />
 
-           <div>
-             <h4 className="text-lg font-semibold mb-4">Legal</h4>
-             <ul className="space-y-2">
-               <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-200">Privacy Policy</a></li>
-               <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-200">Terms of Service</a></li>
-               <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-200">Disclaimer</a></li>
-               <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-200">Security</a></li>
-             </ul>
-           </div>
+          <InfoSection 
+            imageLeft={true}
+            title="Family Support & Resources"
+            subtitle="Community Support"
+            description="Family support is essential in the journey of autism care. We provide comprehensive resources and guidance to help families navigate challenges and celebrate victories together. Our community-based approach ensures that no family walks this path alone."
+            imageSrc="Images/family-support.jpg"
+            decorativeElement={<Users className="w-32 h-32" />}
+          />
+        </div>
 
-           <div>
-             <h4 className="text-lg font-semibold mb-4">Connect</h4>
-             <div className="space-y-4">
-               <div className="flex items-center space-x-3">
-                 <PhoneCall className="w-5 h-5 text-gray-400" />
-                 <span className="text-gray-400">1800-XXX-XXXX</span>
-               </div>
-               <div className="flex items-center space-x-3">
-                 <Mail className="w-5 h-5 text-gray-400" />
-                 <span className="text-gray-400">support@gcpverify.gov.in</span>
-               </div>
-               <div className="flex items-center space-x-3">
-                 <MapPin className="w-5 h-5 text-gray-400" />
-                 <span className="text-gray-400">Chennai, Tamil Nadu</span>
-               </div>
-             </div>
-           </div>
-         </div>
-
-         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-           <p>© 2024 GCP Verify. All rights reserved.</p>
-         </div>
-       </div>
-     </footer>
-
-     {/* QR Scanner Modal remains the same */}
-     {showScanner && (
-       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-         <div className="bg-white rounded-2xl overflow-hidden w-full max-w-md relative">
-           <button
-             onClick={() => setShowScanner(false)}
-             className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full hover:bg-gray-100 transition-colors duration-200"
-           >
-             <X size={20} />
-           </button>
-           <div id="reader" className="w-full"></div>
-           <div className="p-4 text-center bg-gray-900 text-white font-medium">
-             Position QR Code Within Frame
-           </div>
-         </div>
-       </div>
-     )}
-   </div>
- );
+        <div className="absolute top-0 right-0 text-[#41969F]/5">
+          <Sparkles className="w-64 h-64" />
+        </div>
+        <div className="absolute bottom-0 left-0 text-[#41969F]/5">
+          <Brain className="w-48 h-48" />
+        </div>
+      </section>
+    </main>
+  );
 };
 
-export default LandingPage;
+export default Homepage;
