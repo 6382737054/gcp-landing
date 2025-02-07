@@ -1,32 +1,82 @@
 import React, { useState } from 'react';
 import { Play, Brain, Heart, Sparkles, ChevronRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const VideoShowcase = () => {
   const [activeVideo, setActiveVideo] = useState(0);
+  const { language } = useLanguage();
 
-  const videos = [
-    {
-      id: 1,
-      title: "Understanding Autism Spectrum",
-      description: "Discover the unique ways individuals with autism perceive and interact with the world around them.",
-      url: "https://www.youtube.com/embed/YtvP5A5OHpU?si=AFQIv1rJRp2u4R34",
-      thumbnail: "Images/thump1.jpg"
+  const translations = {
+    en: {
+      sectionTag: "Educational Resources",
+      sectionTitle: "Understanding Autism Better",
+      sectionDescription: "Explore our curated video resources designed to help families, caregivers, and individuals understand autism spectrum disorder better.",
+      bottomDescription: "These videos are carefully selected to provide valuable insights and practical guidance for understanding and supporting individuals with autism.",
+      videos: [
+        {
+          id: 1,
+          title: "Understanding Autism Spectrum",
+          description: "Discover the unique ways individuals with autism perceive and interact with the world around them.",
+          url: "https://www.youtube.com/embed/YtvP5A5OHpU?si=AFQIv1rJRp2u4R34",
+          thumbnail: "Images/thump1.jpg"
+        },
+        {
+          id: 2,
+          title: "Early Signs & Intervention",
+          description: "Learn about the early signs of autism and the importance of early intervention strategies.",
+          url: "https://www.youtube.com/embed/9nNh5DR7wbQ?si=iOz91Ct9qgnoGiNU",
+          thumbnail: "Images/thump2.jpg"
+        },
+        {
+          id: 3,
+          title: "Supporting Autistic Children",
+          description: "Expert guidance on creating supportive environments for children with autism.",
+          url: "https://www.youtube.com/embed/RgaeneqlpTc?si=FkttzvDZ6Xd0kNBP",
+          thumbnail: "Images/thump3.jpg"
+        }
+      ]
     },
-    {
-      id: 2,
-      title: "Early Signs & Intervention",
-      description: "Learn about the early signs of autism and the importance of early intervention strategies.",
-      url: "https://www.youtube.com/embed/9nNh5DR7wbQ?si=iOz91Ct9qgnoGiNU",
-   thumbnail: "Images/thump2.jpg"
-    },
-    {
-      id: 3,
-      title: "Supporting Autistic Children",
-      description: "Expert guidance on creating supportive environments for children with autism.",
-      url: "https://www.youtube.com/embed/RgaeneqlpTc?si=FkttzvDZ6Xd0kNBP",
-        thumbnail: "Images/thump3.jpg"
+    ta: {
+      sectionTag: "கல்வி வளங்கள்",
+      sectionTitle: "ஆட்டிசத்தை சிறப்பாக புரிந்துகொள்ளுதல்",
+      sectionDescription: "குடும்பங்கள், பராமரிப்பாளர்கள் மற்றும் நபர்கள் ஆட்டிசம் பரப்பு கோளாற்றை சிறப்பாக புரிந்துகொள்ள உதவும் நமது தேர்ந்தெடுக்கப்பட்ட வீடியோ வளங்களை ஆராய்ந்து பாருங்கள்.",
+      bottomDescription: "ஆட்டிசம் உள்ள நபர்களை புரிந்துகொள்வதற்கும் ஆதரிப்பதற்கும் மதிப்பு மிக்க அறிக்கைகள் மற்றும் நடைமுறை வழிகாட்டுதல்களை வழங்கும் வகையில் இந்த வீடியோக்கள் கவனமாக தேர்ந்தெடுக்கப்பட்டுள்ளன.",
+      videos: [
+        {
+          id: 1,
+          title: "ஆட்டிசம் பரப்பு பற்றிய புரிதல்",
+          description: "ஆட்டிசம் உள்ள நபர்கள் உலகைப் பார்க்கும் மற்றும் தொடர்பு கொள்ளும் தனிப்பட்ட வழிகளைக் கண்டறியுங்கள்.",
+          url: "https://www.youtube.com/embed/YtvP5A5OHpU?si=AFQIv1rJRp2u4R34",
+          thumbnail: "Images/thump1.jpg"
+        },
+        {
+          id: 2,
+          title: "ஆரம்ப அறிகுறிகள் & தலையீடு",
+          description: "ஆட்டிசத்தின் ஆரம்ப அறிகுறிகள் மற்றும் ஆரம்ப தலையீட்டு தந்திரங்களின் முக்கியத்துவம் பற்றி அறிக.",
+          url: "https://www.youtube.com/embed/9nNh5DR7wbQ?si=iOz91Ct9qgnoGiNU",
+          thumbnail: "Images/thump2.jpg"
+        },
+        {
+          id: 3,
+          title: "ஆட்டிசம் உள்ள குழந்தைகளுக்கு ஆதரவு",
+          description: "ஆட்டிசம் உள்ள குழந்தைகளுக்கு ஆதரவு சூழலை உருவாக்குவதற்கான நிபுணர் வழிகாட்டுதல்.",
+          url: "https://www.youtube.com/embed/RgaeneqlpTc?si=FkttzvDZ6Xd0kNBP",
+          thumbnail: "Images/thump3.jpg"
+        }
+      ]
     }
-  ];
+  };
+
+  // Dynamic text sizing function
+  const getTextSize = (baseClass) => {
+    return language === 'ta' 
+      ? baseClass
+        .replace('text-4xl', 'text-3xl md:text-4xl')
+        .replace('text-5xl', 'text-4xl md:text-5xl')
+        .replace('text-lg', 'text-base md:text-lg')
+        .replace('text-sm', 'text-xs md:text-sm')
+      : baseClass;
+  };
 
   return (
     <section className="relative bg-gradient-to-b from-white to-[#F8FAFA] py-20 overflow-hidden">
@@ -47,11 +97,15 @@ const VideoShowcase = () => {
         {/* Section Header */}
         <div className="text-center mb-16 relative">
           <div className="inline-flex items-center space-x-2 px-4 py-2 bg-rose-100 rounded-full mb-4">
-            <span className="text-rose-600 font-medium text-sm tracking-wide uppercase">Educational Resources</span>
+            <span className={`text-rose-600 font-medium ${language === 'ta' ? 'text-xs' : 'text-sm'} tracking-wide uppercase`}>
+              {translations[language].sectionTag}
+            </span>
           </div>
-          <h2 className="text-4xl lg:text-5xl font-bold text-[#004D43] mb-6">Understanding Autism Better</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Explore our curated video resources designed to help families, caregivers, and individuals understand autism spectrum disorder better.
+          <h2 className={`${getTextSize('text-4xl lg:text-5xl')} font-bold text-[#004D43] mb-6`}>
+            {translations[language].sectionTitle}
+          </h2>
+          <p className={`${getTextSize('text-lg')} text-gray-600 max-w-2xl mx-auto`}>
+            {translations[language].sectionDescription}
           </p>
         </div>
 
@@ -60,8 +114,8 @@ const VideoShowcase = () => {
           <div className="lg:col-span-2">
             <div className="relative aspect-video bg-[#004D43] rounded-xl overflow-hidden shadow-2xl">
               <iframe
-                src={videos[activeVideo].url}
-                title={videos[activeVideo].title}
+                src={translations[language].videos[activeVideo].url}
+                title={translations[language].videos[activeVideo].title}
                 className="absolute inset-0 w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -71,7 +125,7 @@ const VideoShowcase = () => {
 
           {/* Video Selection List */}
           <div className="space-y-4">
-            {videos.map((video, index) => (
+            {translations[language].videos.map((video, index) => (
               <button
                 key={video.id}
                 onClick={() => setActiveVideo(index)}
@@ -97,8 +151,8 @@ const VideoShowcase = () => {
                   <div className="flex-1 text-left">
                     <h3 className={`font-semibold mb-1 ${
                       activeVideo === index ? 'text-white' : 'text-[#004D43]'
-                    }`}>{video.title}</h3>
-                    <p className={`text-sm line-clamp-2 ${
+                    } ${language === 'ta' ? 'text-base' : 'text-base'}`}>{video.title}</h3>
+                    <p className={`${getTextSize('text-sm')} line-clamp-2 ${
                       activeVideo === index ? 'text-white/90' : 'text-gray-600'
                     }`}>{video.description}</p>
                   </div>
@@ -113,8 +167,8 @@ const VideoShowcase = () => {
 
         {/* Bottom Description */}
         <div className="text-center">
-          <p className="text-[#004D43] max-w-2xl mx-auto">
-            These videos are carefully selected to provide valuable insights and practical guidance for understanding and supporting individuals with autism.
+          <p className={`text-[#004D43] max-w-2xl mx-auto ${getTextSize('text-base')}`}>
+            {translations[language].bottomDescription}
           </p>
         </div>
       </div>

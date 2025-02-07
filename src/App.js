@@ -1,14 +1,18 @@
+// App.js
 import LandingPage from "./pages/landing";
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
+import { LanguageProvider } from "./context/LanguageContext";
 
 function App() {
   return (
-    <div>
-      <Navbar />
-      <LandingPage />
-      <Footer/>
-    </div>
+    <LanguageProvider>
+      <div>
+        <Navbar />
+        <LandingPage />
+        <Footer />
+      </div>
+    </LanguageProvider>
   );
 }
 
